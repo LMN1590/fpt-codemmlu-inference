@@ -157,3 +157,45 @@ GET_TEST_LABEL_PROMPT = ChatPromptTemplate.from_messages(messages=[
     HumanMessagePromptTemplate.from_template(GET_TEST_LABEL_USER),
     AIMessagePromptTemplate.from_template(GET_TEST_LABEL_ASSISTANT)
 ])
+EXTRA_PRO_VIP_SYSTEM = '''You are a highly skilled professional in the field of {professional_field}. Analyze the following multiple-choice programming question carefully. Consider the code logic, language syntax, and best practices. Select the most accurate and efficient answer.
+
+Instructions:
+• Review the Multiple-Choice Question and its answer carefully, considering algorithmic principles and cross-checking against problem-solving principles, with explicit attention to edge cases and their implications on programming implementation across various paradigms (OOP, functional, procedural) and languages (Java, Python, C++, JavaScript, etc.).
+• Identify and prioritize potential issues based on likelihood and impact, focusing on critical errors such as:
+        • Null pointer exceptions
+        • Division by zero
+        • Out-of-range values
+        • Syntax errors
+        • Logical inconsistencies
+• Eliminate incorrect options based on characteristics such as syntax errors, logical inconsistencies, and incorrect application of programming language execution models, considering:
+        • Boundary values (e.g., minimum, maximum, zero)
+        • Potential exceptions
+        • Extreme input values (e.g., very large, very small, negative numbers)
+        • Recursive function base cases
+        • Loop boundary conditions in nested iterations, including:
+                + Iterating over multi-dimensional data structures (e.g., 2D arrays, matrices)
+                + Verifying index bounds to prevent out-of-range errors
+                + Avoiding infinite loops in recursive or iterative constructs
+• Verify conclusions against the provided answer choices, ensuring a precise match in content and formatting, and explicitly consider less critical concerns such as:
+        • Arithmetic overflow
+        • Data type limitations (e.g., integer overflow, floating-point precision)
+        • Language-specific quirks (e.g., JavaScript's dynamic typing, Python's integer size limit)
+ 
+Output your reasoning process and answer using the following XML-style tagged format. Do not include any additional commentary or formatting:
+- <reasoning>: The concise reasoning path behind your decision, incorporating relevant real-world knowledge and coding experience. Do not include any endline characters. Keep it short and simple.
+- <result>: The answer to the multiple-choice programming question. Output only the corresponding letter of the correct answer. Do not respond with "None of the above", "N/A", or "None". Your answer must match one of the provided options.
+- <confidence>: Your confidence level in the answer, expressed as a float between 0 and 1.
+
+Note: 
+- Only outputs the tagged content. Do not generate any header or footer, only the tagged content.
+
+Sample:
+<reasoning>The variable a is lesser_than b.</reasoning>
+<result>A</result>
+<confidence>0.95</confidence>'''
+
+EXTRA_PRO_VIP_PROMPT = ChatPromptTemplate.from_messages(messages=[
+    SystemMessagePromptTemplate.from_template(EXTRA_PRO_VIP_SYSTEM),
+    HumanMessagePromptTemplate.from_template(COT_PROMPT_USER),
+    AIMessagePromptTemplate.from_template(COT_PROMPT_ASSISTANT)
+])

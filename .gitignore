@@ -1,10 +1,5 @@
 archive/
-result/
 ref/
-actual_test_extra.json
-actual_test.json
-actual_training.json
-actual_val.json
 .env
 .venv/
 __pycache__/

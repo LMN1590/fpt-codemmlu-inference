@@ -41,9 +41,9 @@ class MultipleChoiceQuestion(TypedDict):
 #     max_retries=2,
 # )
 llm_together = ChatTogether(
-    model="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
-    temperature=0,
-    max_tokens=None,
+    model="meta-llama/Llama-3.3-70B-Instruct-Turbo",
+    temperature=0.5,
+    max_tokens=1024,
     timeout=None,
-    max_retries=2
+    max_retries=2,api_key='tgp_v1_x77ByU1OKQEtMf3NjWTXfnh6ABXwthcrdOW3n13h1fE'
 )

@@ -59,17 +59,22 @@ Output your results as a JSON object with this key:
 - "instruction_improvements": A list of focused, actionable suggestions for improving the instructions. Each suggestion should be singular, technically relevant, and written like practical programming guidance. Limit the list to {lim_direction} suggestions.
 
 Note:
-- Prefer using items from the existing list where applicable. Only introduce new directions if necessary.
-- Keep suggestions technical but concise—aim for clarity and utility (e.g., "Remind the model to check for Python operator precedence.").
-- Please be specific on your advice, not just general advice like "Be careful with your decision".
+- Focus on specific programming concepts, data structures, algorithms, and language features that are commonly tested in MCQs
+- Provide concrete examples of what to check for (e.g., "Verify loop boundary conditions in nested iterations")
+- Address multiple programming paradigms (OOP, functional, procedural) and languages (Java, Python, C++, JavaScript, etc.)
+- Include language-specific considerations where relevant but maintain broad applicability
+- Include networking, database, system design, and other software engineering concepts
 - Output only the JSON object. No extra text or headers.
 - Remember that access to the correct answer is not given during testing.
 
 Sample:
 {{
   "instruction_improvements": [
-    "Remind the model to check for off-by-one errors in loop boundaries.",
-    "Encourage explicit mention of edge cases in reasoning."
+    "Check boundary conditions in array/list operations to prevent index out-of-range errors (e.g., arr[length-1] vs arr[length])",
+    "Verify SQL join conditions for potential unintended Cartesian products in multi-table queries",
+    "Evaluate time complexity differences between hash-based lookups (O(1)) and binary search approaches (O(log n))",
+    "Analyze closure variable scope in JavaScript functions to identify potential reference issues",
+    "Test synchronization mechanisms in concurrent code for potential deadlock conditions"
   ]
 }}'''
 
@@ -109,21 +114,24 @@ EVAL_SYSTEM = '''You are a highly skilled software engineer. Analyze the followi
 Instructions:
 {core_instructions}
 
-Output your reasoning process and answer in the form of a JSON with three keys:
-- "reasoning": The concise reasoning path behind your decision, taking into account real-world knowledges and your coding experience. Please perform your reasoning step-by-step. Do not include any endline.
-- "result": The answer to the multiple-choice programming question. Output only the corresponding letter of the correct answer. Do not answer with "None of the above", "N/A" or "None". Your choice must be among the provided answer.
-- "confidence": How confidence you are in your answer.
+Output your reasoning process and answer using the following XML-style tagged format. Do not include any additional commentary or formatting:
+- <reasoning>: The concise reasoning path behind your decision, incorporating relevant real-world knowledge and coding experience. Do not include any endline characters. Keep it short and simple.
+- <result>: The answer to the multiple-choice programming question. Output only the corresponding letter of the correct answer. Do not respond with "None of the above", "N/A", or "None". Your answer must match one of the provided options.
+- <confidence>: Your confidence level in the answer, expressed as a float between 0 and 1.
 
 Note: 
-- Only outputs the JSON. Do not generate any header or footer, only the JSON.
-- Do not include any endline in the JSON response.
+- Only outputs the tagged content. Do not generate any header or footer, only the tagged content.
+- When providing your answer, you MUST properly replace all special XML characters within the tagged content with their text counter part. Do NOT attempt to modify the tags, only the content inside of them should be modified.
++ Replace "&lt;" with "lesser" (for < symbol)
++ Replace "&gt;" with "greater" (for > symbol)
++ Replace "&lt;=" with "lesser_than" (for <= symbol)
++ Replace "&gt;=" with "greater_than" (for >= symbol)
++ Replace "&amp;" with "and" (for & symbol)
 
 Sample:
-{{
-    "reasoning": "...",
-    "result": "A"|"B"|"C"|"D"|"E"|"F"...,
-    "confidence": [0-1]
-}}'''
+<reasoning>The variable a is lesser_than b.</reasoning>
+<result>A</result>
+<confidence>0.95</confidence>'''
 
 EVAL_ASSISTANT = '{{'
 

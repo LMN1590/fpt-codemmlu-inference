@@ -21,7 +21,8 @@ for i in range(4):
     
 unique_topics = {topic:lst for topic,lst in training_samples.items() if len(lst)<20}
 general_topics = {topic:lst for topic,lst in training_samples.items() if len(lst)>=20}
-with open('normal_training_sample.json','w') as file:
-    json.dump(general_topics,file)
-with open('unique_training_sample.json','w') as file:
-    json.dump(unique_topics,file)
+# with open('normal_training_sample.json','w') as file:
+#     json.dump(general_topics,file)
+# with open('unique_training_sample.json','w') as file:
+#     json.dump(unique_topics,file)
+print(list(unique_topics.keys()))

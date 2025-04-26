@@ -1,0 +1,83 @@
+AutoMedPrompt:
+* Review the Multiple-Choice Question and its answer carefully, focusing on software testing methodologies, system design, and quality assurance metrics.
+* Verify the candidate's understanding of:
+  * Software testing methodologies (stress testing, load testing, performance testing)
+  * System design and architecture (bottlenecks, single points of failure)
+  * Quality assurance metrics (reliability, stability, scalability)
+  * Data structure properties (heap, stack, queue) and their implications on time and space complexity
+  * Algorithmic trade-offs (hash tables, binary search trees, graphs) in system design and software engineering
+  * Concurrency control mechanisms (locks, semaphores, monitors) and their application in database
+query optimization and system design
+  * Loop termination conditions and potential infinite loops
+  * Algorithmic time complexity and its implications on system performance
+  * Trade-offs between programming paradigms (OOP, functional, procedural) and their impact on system design, scalability, and reliability
+  * Computer architecture concepts (microprogramming, pipelining, cache memory) and their impact on system performance and design
+  * System design principles (scalability, availability, fault tolerance) and their implications on software engineering and quality assurance metrics
+  * String manipulation algorithms (loop boundary conditions, trade-offs between algorithms)
+  * Networking protocols (TCP/IP, DNS, DHCP) and network architecture
+  * Network security measures (firewalls, VPNs, encryption protocols)
+  * Database concepts (data modeling, normalization, query optimization)
+  * System call parameters and socket programming concepts
+  * Dynamic programming concepts (memoization, tabulation) and
+their application in optimizing algorithmic solutions
+  * Closure properties in programming languages and their implications on
+variable scope and function calls
+  * Data type compatibility and potential precision issues in mathematical functions
+  * Error mitigation strategies for data type mismatches and numerical stability
+  * Recursive function calls and correct parameter updates to prevent infinite loops or incorrect results
+  * Algorithmic modifications for correctness and intended functionality
+  * Trade-offs between recursive and iterative approaches in algorithms
+  * System flowchart notation and software engineering principles
+  * Configuration management principles (version control, change management, documentation)
+  * Loop boundary conditions in two-pointer technique implementations to prevent index out-of-range errors
+  * Impact of pointer movement on algorithm correctness, considering left and right pointer adjustments
+  * Trade-offs between algorithmic approaches (two-pointer technique, binary search) in terms of time complexity, space complexity, and scalability
+  * Potential null pointer exceptions in object-oriented programming and verification of object initialization
+  * Trade-offs between monolithic architecture and microservices architecture in system design, considering scalability, maintainability, and communication overhead  * Implications of cache coherence protocols on concurrent system performance, including cache misses and synchronization mechanisms
+  * Correct usage of socket programming concepts (accept, listen) for client connection handling
+  * Trade-offs between concurrency control mechanisms (threads, processes, async/await) in system design, considering scalability, performance, and complexity      
+  * Implications of error handling strategies on system reliability and stability, including try-catch blocks and logging mechanisms
+  * Correct application of dynamic programming principles (memoization, tabulation) to optimize algorithmic solutions
+  * Trade-offs between data structures (arrays, linked lists, hash tables) in terms of time and space complexity, and their suitability for various problem domains 
+  * Implications of system design principles (scalability, availability, fault tolerance) on software engineering and quality assurance metrics
+  * Array initialization techniques to ensure correct initialization for algorithmic operations
+  * Trade-offs between programming paradigms (OOP, functional, procedural) in terms of code readability, maintainability, and scalability
+
+* Implications of variable scope and closure properties on function calls and variable updates, considering local and global variable interactions
+  * B+ tree node capacity calculations to ensure accurate accounting for key and pointer storage
+  * Trade-offs between data structure implementations (B-trees, hash tables, heaps) in terms of search, insertion, and deletion operations, and their suitability for database and file system applications
+  * Implications of system design principles on data structure and algorithmic choices, and verification of their correct application in system design
+  * Loop boundary conditions in nested iterations to prevent index out-of-range errors and ensure correct loop termination
+  * Trade-offs between algorithmic approaches (dynamic programming, greedy algorithms) in terms of time complexity, space complexity, and scalability
+  * Implications of concurrency control mechanisms on system performance and reliability, considering deadlock prevention and synchronization overhead
+
+* Class and function definitions to prevent undefined references and ensure correct compilation, considering built-in and custom
+data types
+  * Implications of recursive function calls on system performance and reliability, evaluating potential stack overflow errors and incorrect results due to inadequate base cases or parameter updates
+
+
+
+
+
+
+Optimized Prompt
+• Review the Multiple-Choice Question and its answer carefully, considering algorithmic principles and cross-checking against problem-solving principles, with explicit attention to edge cases and their implications on programming implementation across various paradigms (OOP, functional, procedural) and languages (Java, Python, C++, JavaScript, etc.).
+• Identify and prioritize potential issues based on likelihood and impact, focusing on critical errors such as:
+        • Null pointer exceptions
+        • Division by zero
+        • Out-of-range values
+        • Syntax errors
+        • Logical inconsistencies
+• Eliminate incorrect options based on characteristics such as syntax errors, logical inconsistencies, and incorrect application of programming language execution models, considering:
+        • Boundary values (e.g., minimum, maximum, zero)
+        • Potential exceptions
+        • Extreme input values (e.g., very large, very small, negative numbers)
+        • Recursive function base cases
+        • Loop boundary conditions in nested iterations, including:
+                + Iterating over multi-dimensional data structures (e.g., 2D arrays, matrices)
+                + Verifying index bounds to prevent out-of-range errors
+                + Avoiding infinite loops in recursive or iterative constructs
+• Verify conclusions against the provided answer choices, ensuring a precise match in content and formatting, and explicitly consider less critical concerns such as:
+        • Arithmetic overflow
+        • Data type limitations (e.g., integer overflow, floating-point precision)
+        • Language-specific quirks (e.g., JavaScript's dynamic typing, Python's integer size limit)

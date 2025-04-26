@@ -3,15 +3,17 @@ from tqdm import tqdm
 import string
 from utils import check_key
 
-with open('actual_test_extra_basic_knn_cot_ensemble5_pro.json') as file:
+with open('actual_test_extra_basic_knn_cot_ensemble5_finetuned_0.7203647.json') as file:
     qna_dict = json.load(file)
+
+PERM = 5
 
 count = 0
 correct_ans = 0
 final_res = []  
 for task_id, samples in qna_dict.items():
     sample_score = [0]*26
-    for sample in samples:
+    for sample in samples[:PERM]:
         if not check_key(sample,'answer') or not sample['answer']['status'] or sample['answer']['result'] is None or not sample['answer']['result'] in string.ascii_uppercase or string.ascii_uppercase.index(sample['answer']['result']) >= len(sample['choices']):continue
         try:
             current_index = string.ascii_uppercase.index(sample['answer']['result'])

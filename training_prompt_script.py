@@ -1,8 +1,11 @@
 import json
+import dirtyjson
 from typing import List,Dict
 import random
 import string
 from tqdm import tqdm
+import re
+import xml.etree.ElementTree as ET 
 
 from langchain_core.runnables import RunnableSerializable
 from langchain_core.messages import BaseMessage
@@ -28,10 +31,11 @@ SAMPLE_SIZE = 32
 EPOCH = 5
 EARLY_STOPPING_BATCH_PATIENCE = 5
 BUDGET = 5
-LIM_DIRECTION = 5
+LIM_DIRECTION = 3
+RANDOM_ORDER =len(val_set)
 
 # CORE_INSTRUCTIONS_COMP = '''Review the Multiple-Choice Question and its answer carefully before making your decision'''
-CORE_INSTRUCTIONS_COMP='''• Review the Multiple-Choice Question and its answer carefully before making your decision.'''
+CORE_INSTRUCTIONS_COMP='''- Review the Multiple-Choice Question and its answer carefully.'''
 
 answer_pipeline = ANSWER_PROMPT|llm_together
 review_pipeline = ANSWER_REVIEW_PROMPT|llm_together
@@ -39,24 +43,18 @@ gen_improv_pipeline = IMPROVEMENT_GENERATION_PROMPT|llm_together
 prompt_tuning = IMPROVEMENT_APPLY_PROMPT|llm_together
 eval_pipeline = EVAL_PROMPT|llm_together
 
+def parse_LLM_output_to_valid_JSON(output:str)->str:
+    return output.replace("\n"," ").replace("\t"," ")
 def parse_json(llm_output:str):
-    text = llm_output.strip()
-    start = min((i for i in (text.find('{'), text.find('[')) if i != -1), default=-1)
-    if start == -1: raise ValueError("No JSON found.")
-
-    stack, in_str, esc = [], False, False
-    for i in range(start, len(text)):
-        c = text[i]
-        esc = (c == '\\' and in_str and not esc or False)
-        in_str = in_str ^ (c == '"' and not esc) if c == '"' or in_str else in_str
-        if in_str: continue
-        if c in '{[': stack.append(c)
-        elif c in '}]':
-            if not stack or {'{': '}', '[': ']'}[stack.pop()] != c:
-                raise ValueError("Mismatched brackets.")
-            if not stack:
-                return json.loads(text[start:i+1])
-    raise ValueError("Incomplete JSON block.")
+    ls = re.findall('{[^{}]+}','{'+llm_output+'}')
+    if(len(ls)==0): raise NotImplementedError('No JSON found')
+    return dirtyjson.loads(parse_LLM_output_to_valid_JSON(ls[0]))
+def parse_xml(llm_output:str):
+    tree = ET.fromstring('<xml>'+llm_output+'</xml>')
+    output_res = {}
+    for child in tree:
+        output_res[child.tag] = child.text
+    return output_res
 
 # region Utils Inference Function
 def _inference(ques:MultipleChoiceQuestion,pipeline:RunnableSerializable[Dict,BaseMessage],core_instructions_comp:str):
@@ -91,13 +89,14 @@ def _gen_improvement_points(review:str,review_dict:Dict[str,int]):
         'cur_improv':list(review_dict.keys())
     })
     
-    result_content = result.content if result.content[0]=='{' else '{' + result.content
-    result_content = result_content if result.content[-1]=='}' else result_content + '}'
+    # result_content = result.content if result.content[0]=='{' else '{' + result.content
+    # result_content = result_content if result.content[-1]=='}' else result_content + '}'
     try:
-        parsed_result = parse_json(result_content)
+        parsed_result = parse_json(result.content)
     except Exception as e:
         parsed_result = {"instruction_improvements":[]}
         print("Error Occurs", e)
+        print(result.content)
     for point in parsed_result['instruction_improvements']:
         review_dict[point] = review_dict.get(point,0)+1
     return review_dict
@@ -124,6 +123,7 @@ def optimize_batch(batch:List[MultipleChoiceQuestion],epoch:int,batch_idx:int,ba
         current_review_dict = _single_inference_and_review(ques,answer_pipeline,current_review_dict)
     return current_review_dict
 def modify_prompt(improvement_direction:str):
+    print(improvement_direction)
     result = prompt_tuning.invoke({
         "cur_instruction":CORE_INSTRUCTIONS_COMP,
         'improv_dir':improvement_direction
@@ -131,16 +131,19 @@ def modify_prompt(improvement_direction:str):
     return result.content
 def run_eval(current_prompt:str,epoch:int,batch_idx:int,batch_length:int)->float:
     correct_count = 0
-    for ques in tqdm(val_set,desc=f'Running Eval for Epoch {epoch} - Batch {batch_idx+1}/{batch_length}'):
+    count = 1e-5
+    for ques in tqdm(random.sample(val_set,k=RANDOM_ORDER),desc=f'Running Eval for Epoch {epoch} - Batch {batch_idx+1}/{batch_length} - Result: {correct_count/count}'):
         result_content = _inference(ques,eval_pipeline,current_prompt)
-        result_content = result_content if result_content[0]=='{' else '{' + result_content
-        result_content = result_content if result_content[-1]=='}' else result_content + '}'
+        # result_content = result_content if result_content[0]=='{' else '{' + result_content
+        # result_content = result_content if result_content[-1]=='}' else result_content + '}'
         try:
-            parsed_result = parse_json(result_content)
+            parsed_result = parse_xml(result_content)
             correct_count += int(ques['groundtruth']==parsed_result['result'])
+            count+=1
         except Exception as e:
             print(f"Failed Evaluation of ques {ques['task_id']} due to",e)
-    return correct_count/len(val_set)
+            print(result_content)
+    return correct_count/RANDOM_ORDER
 
 eval_result_record = [0]
 current_patience = 0
@@ -152,8 +155,8 @@ for epoch in range(EPOCH):
     
     for idx,batch in enumerate(training_batches):
         review_dict = optimize_batch(batch,epoch,idx,batch_length)
-        best_improvment_dir = max(*list(review_dict.items()),key=lambda k_v:k_v[1])
-        modified_instruction_prompt = modify_prompt(best_improvment_dir[0])
+        best_improvment_dir = "\n".join(list(review_dict.keys())) #max(*list(review_dict.items()),key=lambda k_v:k_v[1])
+        modified_instruction_prompt = modify_prompt(best_improvment_dir)
         eval_res = run_eval(modified_instruction_prompt,epoch,idx,batch_length)
         best_eval_res = max(eval_result_record)
         if eval_res > best_eval_res:

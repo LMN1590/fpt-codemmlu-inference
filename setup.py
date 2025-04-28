@@ -45,5 +45,5 @@ llm_together = ChatTogether(
     temperature=0.5,
     max_tokens=1024,
     timeout=None,
-    max_retries=2,api_key='tgp_v1_x77ByU1OKQEtMf3NjWTXfnh6ABXwthcrdOW3n13h1fE'
+    max_retries=2,api_key='xxx_xxx_xxx'
 )
